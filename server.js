@@ -9,6 +9,7 @@ const bodyParser = require('body-parser'); //this is going to allow us to access
 
 const indexRouter = require('./routes/index');
 const researchersRouter = require('./routes/researchers');
+const authenticationRouter = require('./routes/authentication');
 
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
@@ -25,6 +26,7 @@ db.on('error', error => console.error(error));
 db.once('open', () => console.log('Connected to Mongoose'));
 
 app.use('/', indexRouter);
+app.use('/authentication', authenticationRouter);
 //whats going to happen here is that any route that starts with /researchers is going to be handled by the researchersRouter, 
 //which is the researchers.js, where we have all the routes for the researchers.
 app.use('/researchers', researchersRouter);

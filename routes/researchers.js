@@ -36,24 +36,7 @@ router.post('/', async (req, res) => {
             researcher: researcher,
             errorMessage: 'Error creating Researcher'
         })
-    }
-
-    /*
-    await researcher.save()
-        .then(() => {
-            //res.redirect(`researchers/${newResearcher.id}`);
-            res.redirect(`researchers`);
-        })
-        .catch(err => {
-            //if there is an error it passes the researcher object back to the old view
-            console.log(err);
-            res.render('researchers/new', {
-                researcher: researcher,
-                errorMessage: 'Error creating Researcher'
-            })
-        });
-        */
-        
+    }   
 });
 
 

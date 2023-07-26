@@ -1,5 +1,11 @@
-<h2>Login</h2>
-<form action="/login" method="POST">
-    <% include('../partials/authenticationFormFields') %>
-    <button type="submit">Login</button>
-</form>
+<div class="login-container">
+    <h2>Login</h2>
+    <form class="login-form" action="/authentication/login" method="POST">
+        <%- include('../partials/authentication/loginFormFields') %>
+        <%- include('../partials/errorMessage.ejs') %>
+            <input type="submit" value="Login">
+            <p>
+                Need an account? <a href="/authentication/signUp">Sign up</a>
+            </p>
+    </form>
+</div>

@@ -1,0 +1,83 @@
+<div class="signup-container">
+    <h2>Sign Up</h2>
+    <form class="signup-form" action="/authentication/signUp" method="POST">
+        <%- include('../partials/authentication/signUpFormFields') %>
+        <%- include('../partials/errorMessage.ejs') %>
+            <input id="submitInput" type="submit" value="Sign up">
+            <p id="passwordCheck1" style="color: red;">Passwords don't match</p>
+            <p id="passwordCheck2" style="color: red;">One uppercase letter</p>
+            <p id="passwordCheck3" style="color: red;">One number</p>
+            <p id="passwordCheck4" style="color: red;">8 characters minimum</p>
+            <p style="width: max-content;">
+                Already have an account? <a href="/authentication/login">Login</a>
+            </p>
+    </form>
+</div>
+
+<script>
+    function checkPasswords() {
+        const password = document.getElementById("password_input_field").value;
+        const confirmPassword = document.getElementById("confirm_password_input_field").value;
+        const submitInput = document.getElementById("submitInput");
+
+        checkPasswordRequirements(password, confirmPassword, submitInput);
+
+    }
+    function checkPasswordRequirements(password, confirmPassword, submitInput) {
+        checkPasswordMatches(password, confirmPassword, submitInput);
+        checkPasswordUppercase(password);
+        checkPasswordNumber(password);
+        checkPasswordLength(password);
+    }
+
+    function checkPasswordMatches(password, confirmPassword, submitInput) {
+        const passwordCheck1 = document.getElementById("passwordCheck1");
+        if (password !== confirmPassword || password.length != confirmPassword.length) {
+            submitInput.disabled = true;
+            submitInput.style.opacity = "0.5";
+            
+            passwordCheck1.innerHTML = "Passwords don't match";
+            passwordCheck1.style.color = "red";
+            passwordCheck1.style.opacity = "1";
+        } else {
+            submitInput.disabled = false;
+            submitInput.style.opacity = "1";
+
+            passwordCheck1.innerHTML = "Passwords match";
+            passwordCheck1.style.color = "green";
+            passwordCheck1.style.opacity = "0.5";
+        }
+    }
+
+    function checkPasswordLength(password) {
+        const passwordCheck4 = document.getElementById("passwordCheck4");
+        if (password.length >= 8 && password.length <= 32) {
+            passwordCheck4.style.color = "green";
+            passwordCheck4.style.opacity = "0.5";
+        } else {
+            passwordCheck4.style.color = "red";
+            passwordCheck4.style.opacity = "1";
+        }
+    }
+    function checkPasswordNumber(password) {
+        const passwordCheck3 = document.getElementById("passwordCheck3");
+        if (password.match(/[0-9]/)) {
+            passwordCheck3.style.color = "green";
+            passwordCheck3.style.opacity = "0.5";
+        } else {
+            passwordCheck3.style.color = "red";
+            passwordCheck3.style.opacity = "1";
+        }
+    }
+    function checkPasswordUppercase(password) {
+        const passwordCheck2 = document.getElementById("passwordCheck2");
+        if (password.match(/[A-Z]/)) {
+            passwordCheck2.style.color = "green";
+            passwordCheck2.style.opacity = "0.5";
+        } else {
+            passwordCheck2.style.color = "red";
+            passwordCheck2.style.opacity = "1";
+        }
+    }
+    
+</script>
