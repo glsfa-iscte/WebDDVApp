@@ -6,10 +6,10 @@
         <% if(app.currentUser){ %>
             <a>Current user id: <%=app.currentUser.id%></a>
             <a href="/accessCloudAPI">Access Cloud</a>
-            <a href="/authentication/logout">Logout</a>
+            <a href="/logout">Logout</a>
         <% } else { %>
-            <a href="/authentication/login">Login</a>
-            <a href="/authentication/signUp">Sign up</a>
+            <a href="/login">Login</a>
+            <a href="/signUp">Sign up</a>
         <% } %>
     </div>
 </header>
@@ -19,18 +19,13 @@
     <script src="../../public/scripts.js"></script> 
 -->
 <script>
-    //TODO: COMMENTED CODE DUE TO THIS SCRIPT BEING RENDERED BEFORE DE DIV WHERE MAIN IS (FEATURE ENVY)
     /* Set the width of the side navigation to 250px */
     function openNav() {
         document.getElementById("sideNav").style.width = "250px";
-        //document.getElementById("main").style.marginLeft = "250px !important";
-        //document.body.style.backgroundColor = "rgba(0,0,0,0.1) !important";
     }
 
     /* Set the width of the side navigation to 0 */
     function closeNav() {
         document.getElementById("sideNav").style.width = "0";
-        //document.getElementById("main").style.marginLeft = "0";
-        //document.body.style.backgroundColor = "red !important";
     }
 </script>

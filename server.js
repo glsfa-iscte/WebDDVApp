@@ -38,7 +38,8 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 
 
-//this is not needed due to:
+// TODO REMOVE
+// this is not needed due to:
 //-> connection to the database is handled at login
 //-> this would only be for a data services 
 //   - not the access to the app client (The App client is the interface to the Atlas App Services backend. It provides access to the authentication functionality and functions.) a user added thru realm
@@ -51,12 +52,17 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 //db.once('open', () => console.log('Connected to Mongoose'));
 
 //MOVED FROM AUTHENTICATION TO SERVER.JS
+//Once set, the value of app.locals properties persist throughout the life of the application, in contrast with res.locals properties 
+// that are valid only for the lifetime of the request.
+//You can access local variables in templates rendered within the application. This is useful for providing helper functions to templates, 
+// as well as application-level data. Local variables are available in middleware via req.app.locals
+
 app.locals.app = new Realm.App({ id: process.env.MONGO_DB_APP_ID });
 app.locals.user;
 
 //authentication router could be set to just / 
 app.use('/', indexRouter);
-app.use('/authentication', authenticationRouter);
+//app.use('/authentication', authenticationRouter);
 app.use('/accessCloudAPI', accessCloudAPIRouter);
 
 app.listen(process.env.PORT || 3000);

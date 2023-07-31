@@ -1,1 +1,13 @@
-Home view
+<% if(!app.currentUser){ %>
+    <div class="index">
+        <h1> DDVApp </h1>
+        <br>
+        <h4> Please choose one of the following: </h4>
+        <br>
+        <a href="/login">Login</a>
+        <br>
+        <a href="/signUp">Sign up</a>
+    </div>
+    <% } else { %>
+        <h2> Welcome <%=app.currentUser.id %>! </h2>
+<% } %>

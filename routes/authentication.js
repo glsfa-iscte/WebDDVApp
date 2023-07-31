@@ -1,13 +1,9 @@
+/*
+//commented due to better url handling
 const express = require('express');
 const router = express.Router();
 const Realm = require('realm-web');
-//MOVED TO SERVER.JS
-//const Realm = require('realm-web');
-// Add your App ID
-//global.app = new Realm.App({ id:'application-0-vtkwx' });
-//global.user;
- 
-  
+
 //All routes in this file start with /authentication
 // these are the routes to render the authentication pages
 router.get('/login', (req, res) => {
@@ -19,9 +15,12 @@ router.get('/signUp', (req, res) => {
 });
 
 router.get('/logout', async (req, res) => {
-    const user = req.app.locals.user
-    await user.logOut();
+    const app = req.app.locals.app;
+
+    await app.currentUser.logOut();
     res.redirect('/');
+
+    listUsers(app);
 });
     
 
@@ -33,6 +32,7 @@ router.post('/login', async (req, res) => {
     try {
         req.app.locals.user = await loginEmailPassword(email, password, app);
         res.redirect('/');
+        
     } catch (error) {
         console.error('Failed to login', error);
         res.render('authentication/login',
@@ -41,6 +41,7 @@ router.post('/login', async (req, res) => {
             email: email
         });
     }
+    listUsers(app);
 });
 
 router.post('/signUp', async (req, res) => {
@@ -69,4 +70,19 @@ async function loginEmailPassword(email, password, app) {
     return user;
   }
 
+// Used for debug purposes
+// This list includes all users that have logged in to the client app regardless of whether they are currently authenticated.
+function listUsers(app) {
+    // Get an object with all Users, where the keys are the User IDs
+    console.log("1------")
+    for (const userId in app.allUsers) {
+        const user = app.allUsers[userId];
+        console.log(
+            `User with id ${user.id} is ${user.isLoggedIn ? "logged in" : "logged out"
+            }`
+        );
+    }
+    console.log("2------")
+}
 module.exports = router;
+*/
