@@ -1,0 +1,52 @@
+<h2>DJI Cloud API Integration</h2>
+<p>
+    This page is used to test the DJI Cloud API integration.
+    The accessCoudAPI.html has to run on the webview interface of the remote control Pilot2.
+    Once the connection is established, the remote controller will send osd data (including latitude, longitude,
+    height...)
+    to the MQTT server at a fixed frequency
+
+    to run this page, open a terminal in the folder DJI and run the following command "python -m http.server"
+    test on a device
+</p>
+<br>
+<p> For develop this remains as a separate page, but it should run the code once login is made</p>
+<ul>
+    <li id="APP_ID">app_id: <%=APP_ID%>
+    </li>
+    <li id="APP_KEY">app_key: <%= APP_KEY%>
+    </li>
+    <li id="LICENSE">license: <%= LICENSE%>
+    </li>
+    <li id="MQTT_ADDRESS">mqtt_address: <%= MQTT_ADDRESS %>
+    </li>
+    <li id="USER">user: <%= USER %>
+    </li>
+    <li id="PASSWORD">password: <%= PASSWORD %>
+    </li>
+</ul>
+<div id="config-data" data-app-id="<%= APP_ID %>" data-app-key="<%= APP_KEY %>" data-license="<%= LICENSE %>"
+    data-mqtt-address="<%= MQTT_ADDRESS %>" data-user="<%= USER %>" data-password="<%= PASSWORD %>"></div>
+<script>
+    //FOR DEVELOPMENT THIS IS OK BUT IT SHOULD BE CHANGED, TO ZOD, TO HAVE SECURED DATA
+    const configDataElement = document.getElementById('config-data');
+    const APP_ID = configDataElement.getAttribute('data-app-id');
+    const APP_KEY = configDataElement.getAttribute('data-app-key');
+    const LICENSE = configDataElement.getAttribute('data-license');
+    const MQTT_ADDRESS = configDataElement.getAttribute('data-mqtt-address');
+    const USER = configDataElement.getAttribute('data-user');
+    const PASSWORD = configDataElement.getAttribute('data-password');
+
+    // Now you can use these variables in your client-side JavaScript code
+    console.log(APP_ID);
+    console.log(APP_KEY);
+    console.log(LICENSE);
+    console.log(MQTT_ADDRESS);
+    console.log(USER);
+    console.log(PASSWORD);
+
+    platformVerifyLicense(APP_ID, APP_KEY, LICENSE)
+    const register_params = registerParams(MQTT_ADDRESS, USER, PASSWORD);
+    loadModule(register_params);
+    establishConnection(USER, PASSWORD);
+</script>

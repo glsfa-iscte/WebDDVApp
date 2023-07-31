@@ -91,3 +91,61 @@ function checkPasswordUppercase(password, passwordCheckHassUppercaseId) {
     }
 }
 */
+
+// Your code that uses the variables
+//const { APP_ID, APP_KEY, LICENSE, MQTT_ADDRESS, USER, PASSWORD } = window.config;
+
+
+console.log("OPENING SCRIPTS.JS")
+
+function platformVerifyLicense(APP_ID, APP_KEY, LICENSE) {
+    let token = window.djiBridge.platformVerifyLicense(
+        APP_ID,
+        APP_KEY,
+        LICENSE
+    );
+    log("platform is verified: " + window.djiBridge.platformIsVerified());
+}
+
+function registerParams(MQTT_ADDRESS, USER, PASSWORD) {
+    let register_params = JSON.stringify({
+        host: MQTT_ADDRESS,
+        connectCallback: "reg_calback",
+        username: USER,
+        password: PASSWORD,
+    });
+    return register_params;
+}
+
+//Used to load the cloud module
+function loadModule(register_params) {
+    log("Load Component: thing " +
+        window.djiBridge.platformLoadComponent("thing", register_params) +
+        "\n State: " +
+        window.djiBridge.thingGetConnectState());
+}
+
+function establishConnection(USER, PASSWORD) {
+    log(
+        "Start the connection thingconn: " +
+        window.djiBridge.thingConnect(USER, PASSWORD, "reg_calback")
+    );
+    log("Thing Connect state: " + window.djiBridge.thingGetConnectState());
+}
+
+/**
+ * @param {string} uuid - the identifier of the workspace Identifier, the id must be uuid grid format. 
+ *                        Example: e3dea0f5-37f2-4d79-ae58-490af3228069
+ */
+function setWorkspaseId(uuid) {
+    window.djiBridge.platformSetWorkspaceId(uuid)
+}
+
+/** Set platform name
+ * @param {string} platformName - platform name
+ * @param {string} workspaceName - the name displayed on the Pilot cloud portal
+ * @param {string} desc - the description displayed on the Pilot cloud portal
+ */
+function setPlatformName(platformName, workspaceName, desc) {
+    window.djiBridge.platformSetInformation(platformName, workspaceName, desc)
+}

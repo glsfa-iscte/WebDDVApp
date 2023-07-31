@@ -5,4 +5,5 @@ router.get('/', (req, res) => {
     //render our index view
     res.render('index');
 });
+
 module.exports = router;

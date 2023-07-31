@@ -5,6 +5,7 @@
         <a href="/">Home</a>
         <% if(app.currentUser){ %>
             <a>Current user id: <%=app.currentUser.id%></a>
+            <a href="/accessCloudAPI">Access Cloud</a>
             <a href="/authentication/logout">Logout</a>
         <% } else { %>
             <a href="/authentication/login">Login</a>
