@@ -11,35 +11,16 @@
 </p>
 <br>
 <p> For develop this remains as a separate page, but it should run the code once login is made</p>
-<ul>
-    <li id="APP_ID">app_id: <%=APP_ID%>
-    </li>
-    <li id="APP_KEY">app_key: <%= APP_KEY%>
-    </li>
-    <li id="LICENSE">license: <%= LICENSE%>
-    </li>
-    <li id="MQTT_ADDRESS">mqtt_address: <%= MQTT_ADDRESS %>
-    </li>
-    <li id="USER">user: <%= EMAIL %>
-    </li>
-    <li id="PASSWORD">password: <%= PASSWORD %>
-    </li>
-</ul>
 
 <script>
     //FOR DEVELOPMENT THIS IS OK BUT IT SHOULD BE CHANGED, TO ZOD, TO HAVE SECURED DATA
-    const configDataElement = document.getElementById('config-data');
-    const APP_ID = "<%= APP_ID %>";
-    const APP_KEY = "<%= APP_KEY %>"
-    const LICENSE = "<%= LICENSE %>"
-    const MQTT_ADDRESS = "<%= MQTT_ADDRESS %>"
-    const USER = "<%= EMAIL %>"
-    const PASSWORD = "<%= PASSWORD %>"
+    window.onload = () => {
+        // Extract the configData object from the server-side data
+        const { APP_ID, APP_KEY, LICENSE, MQTT_ADDRESS, USER, PASSWORD } =  <%-JSON.stringify(configData)%>;
 
-    console.log("APP_ID: ", APP_ID)
-
-    platformVerifyLicense(APP_ID, APP_KEY, LICENSE)
-    const register_params = registerParams(MQTT_ADDRESS, USER, PASSWORD);
-    loadModule(register_params);
-    establishConnection(USER, PASSWORD);
+        platformVerifyLicense(APP_ID, APP_KEY, LICENSE);
+        const register_params = registerParams(MQTT_ADDRESS, USER, PASSWORD);
+        loadModule(register_params);
+        establishConnection(USER, PASSWORD);
+    }
 </script>

@@ -22,9 +22,18 @@ router.get('/logout', async (req, res) => {
     const app = req.app.locals.app;
 
     await app.currentUser.logOut();
-    res.redirect('/');
+    //res.redirect('/');
 
     listUsers(app);
+    // Clear the session to remove the email
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+        } else {
+            // Redirect the user to the home page
+            res.redirect('/');
+        }
+    });
 });
     
 
@@ -33,12 +42,12 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const app = req.app.locals.app;
     console.log(email, password);
-    req.app.locals.emailAddress = email;
-    req.app.locals.password = password;
     try {
         req.app.locals.user = await loginEmailPassword(email, password, app);
-        res.locals.emailAddress = email;
-        res.locals.password = password;
+        
+        req.session.email = email;
+        req.session.password = password;
+
         res.redirect('/accessCloudAPI');
     } catch (error) {
         console.error('Failed to login', error);

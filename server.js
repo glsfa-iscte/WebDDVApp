@@ -15,6 +15,7 @@ const app = express();
 const expressLayouts = require('express-ejs-layouts');
 const bodyParser = require('body-parser'); //this is going to allow us to access the data that is posted from the form inside of our controller
 const Realm = require('realm-web');
+const session = require('express-session');
 
 const indexRouter = require('./routes/index');
 const authenticationRouter = require('./routes/authentication');
@@ -36,6 +37,12 @@ app.use(expressLayouts);
 //STYLESHEETS, JAVASCRIPT, IMAGES, ... 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
+//THIS KEY NEEDS TO BE CHANGED BUT ITS USED TO PROPAGATE DATA THRU A SESSION, IN OUR CASE THE LOGGED IN USER INFO
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true
+  }));
 
 
 // TODO REMOVE
