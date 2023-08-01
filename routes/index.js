@@ -33,10 +33,13 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const app = req.app.locals.app;
     console.log(email, password);
+    req.app.locals.emailAddress = email;
+    req.app.locals.password = password;
     try {
         req.app.locals.user = await loginEmailPassword(email, password, app);
-        res.redirect('/');
-        
+        res.locals.emailAddress = email;
+        res.locals.password = password;
+        res.redirect('/accessCloudAPI');
     } catch (error) {
         console.error('Failed to login', error);
         res.render('login',

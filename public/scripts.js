@@ -1,5 +1,5 @@
 /*
-TODO: NOT WORKING YET, AM NOT ABLE TO CALL THESE INSICE THE CORRESPONDING PLACES
+TODO: NOT WORKING YET, AM NOT ABLE TO CALL THESE INSIDE THE CORRESPONDING PLACES
 // Function to toggle the sidenav
 function toggleSidebar() {
     const sidenav = document.querySelector('.sidenav');
