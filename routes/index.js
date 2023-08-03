@@ -35,7 +35,7 @@ router.get('/logout', async (req, res) => {
         }
     });
 });
-    
+
 
 // these are the routes to handle the authentication
 router.post('/login', async (req, res) => {
@@ -44,7 +44,7 @@ router.post('/login', async (req, res) => {
     console.log(email, password);
     try {
         req.app.locals.user = await loginEmailPassword(email, password, app);
-        
+        // Store the email and password in the session
         req.session.email = email;
         req.session.password = password;
 
@@ -52,10 +52,10 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         console.error('Failed to login', error);
         res.render('login',
-         { 
-            errorMessage: `Failed to login: ${error.error}`,
-            email: email
-        });
+            {
+                errorMessage: `Failed to login: ${error.error}`,
+                email: email
+            });
     }
     listUsers(app);
 });
@@ -68,11 +68,11 @@ router.post('/signUp', async (req, res) => {
         res.redirect('/login');
     } catch (error) {
         console.error('Failed to sign up', error);
-        res.render('signUp', 
-        { 
-            errorMessage: `Failed to sign up: ${error.error}`,
-            email: email 
-        });
+        res.render('signUp',
+            {
+                errorMessage: `Failed to sign up: ${error.error}`,
+                email: email
+            });
     }
 });
 
@@ -84,7 +84,7 @@ async function loginEmailPassword(email, password, app) {
     // `App.currentUser` updates to match the logged in user
     console.assert(user.id === app.currentUser.id);
     return user;
-  }
+}
 
 // Used for debug purposes
 // This list includes all users that have logged in to the client app regardless of whether they are currently authenticated.

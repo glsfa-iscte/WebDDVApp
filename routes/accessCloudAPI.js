@@ -1,6 +1,6 @@
-//const { APP_ID, APP_KEY, LICENSE, MQTT_ADDRESS } = require('../config');
 const express = require('express');
 const router = express.Router();
+const Realm = require('realm-web');
 
 router.get('/', (req, res) => {
     const EMAIL = req.session.email;
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
         EMAIL: EMAIL,
         PASSWORD: PASSWORD
     }
-    res.render('accessCloudAPI', { configData });
+    res.render('accessCloudAPI', { configData: configData });
 });
 
 

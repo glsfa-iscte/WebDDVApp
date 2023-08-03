@@ -96,7 +96,7 @@ function checkPasswordUppercase(password, passwordCheckHassUppercaseId) {
 //const { APP_ID, APP_KEY, LICENSE, MQTT_ADDRESS, USER, PASSWORD } = window.config;
 
 
-console.log("OPENING SCRIPTS.JS")
+//These functions are used to accessCloudAPI.ejs
 
 function platformVerifyLicense(APP_ID, APP_KEY, LICENSE) {
     let token = window.djiBridge.platformVerifyLicense(

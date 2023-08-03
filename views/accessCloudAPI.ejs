@@ -16,7 +16,7 @@
     //FOR DEVELOPMENT THIS IS OK BUT IT SHOULD BE CHANGED, TO ZOD, TO HAVE SECURED DATA
     window.onload = () => {
         // Extract the configData object from the server-side data
-        const { APP_ID, APP_KEY, LICENSE, MQTT_ADDRESS, USER, PASSWORD } =  <%-JSON.stringify(configData)%>;
+        const { APP_ID, APP_KEY, LICENSE, MQTT_ADDRESS, USER, PASSWORD } = JSON.stringify(configData);
 
         platformVerifyLicense(APP_ID, APP_KEY, LICENSE);
         const register_params = registerParams(MQTT_ADDRESS, USER, PASSWORD);
