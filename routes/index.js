@@ -8,7 +8,6 @@ router.get('/', (req, res) => {
 });
 
 //USER AUTHENTICATION
-//All routes in this file start with /authentication
 // these are the routes to render the authentication pages
 router.get('/login', (req, res) => {
     res.render('authentication/login');
