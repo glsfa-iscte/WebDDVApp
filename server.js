@@ -31,7 +31,7 @@ app.use(
   session({
     secret: process.env.SESSION_KEY, //used create a hash to sign the session ID cookie
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_DB_SESSION_URL })
   })
 );
