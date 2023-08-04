@@ -50,7 +50,7 @@ router.post('/login', async (req, res) => {
         res.redirect('/accessCloudAPI');
     } catch (error) {
         console.error('Failed to login', error);
-        res.render('login',
+        res.render('authentication/login',
             {
                 errorMessage: `Failed to login: ${error.error}`,
                 email: email
@@ -67,7 +67,7 @@ router.post('/signUp', async (req, res) => {
         res.redirect('/login');
     } catch (error) {
         console.error('Failed to sign up', error);
-        res.render('signUp',
+        res.render('authentication/signUp',
             {
                 errorMessage: `Failed to sign up: ${error.error}`,
                 email: email
