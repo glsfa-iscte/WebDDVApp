@@ -1,4 +1,4 @@
-<% if(!app.currentUser){ %>
+<% if(!email){ %>
     <div class="index">
         <h1> DDVApp </h1>
         <br>
@@ -9,5 +9,5 @@
         <a href="/signUp">Sign up</a>
     </div>
     <% } else { %>
-        <h2> Welcome <%=app.currentUser.id %>! </h2>
+        <h2> Welcome <%=email %>! </h2>
 <% } %>

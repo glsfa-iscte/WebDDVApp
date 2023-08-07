@@ -26,12 +26,17 @@ app.use(expressLayouts);
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 
+//secure: true is a recommended option. However, it requires an https-enabled website, i.e., HTTPS is necessary for secure cookies.
+// If secure is set, and you access your site over HTTP, the cookie will not be set. If you have your node.js behind a proxy and are using secure: true
+//app.set('trust proxy', 1) // trust first proxy
+
 // Create a session for the authenticated user
 app.use(
   session({
     secret: process.env.SESSION_KEY, //used create a hash to sign the session ID cookie
     resave: false,
     saveUninitialized: false,
+    //cookie: { secure: true },
     store: MongoStore.create({ mongoUrl: process.env.MONGO_DB_SESSION_URL })
   })
 );
@@ -40,8 +45,10 @@ app.use(
 //You can access local variables in templates rendered within the application. This is useful for providing helper functions to templates, 
 // as well as application-level data. Local variables are available in middleware via req.app.locals
 
+
 app.locals.app = new Realm.App({ id: process.env.MONGO_DB_APP_ID });
-app.locals.user;
+//TODO THIS NEEDS TO BE CHANGED TO SESSION VARIABLES NOT GLOBAL VARIABLES
+//app.locals.user;
 
 app.use('/', indexRouter);
 app.use('/accessCloudAPI', accessCloudAPIRouter);
@@ -65,12 +72,5 @@ function replaceStringFields(url, replacements) {
   return url;
 }
 //TODO 
-// VERIFY THAT THIS IS THE CORRECT WAY TO HANDLE A SESSION, IN REGARDS TO A AUTHENTICATED USER
-// THAT IS EVERY REALM USER IS CONNECTED TO ONE ATLAS DATABASE USER, WHERE INNITIALLY I WAS THINKING IT SHOULD BE EVERY REALM USER CONNECTED TO ONE ATLAS DATABASE USER
-// PERHAPS WE SHOULDNT BE USING MONGO ATLAS FOR THIS
-// 
-// I TRIED HAVING THE CODE TO SET UP A NEW SESSION INSIDE THE LOGIN PROCESS BUT WAS UNABLE TO DO SO
-// https://www.npmjs.com/package/connect-mongo#express-or-connect-integration
-//
-// NOTE: FOR PRODUCTION STORE CAN BE COMMENTED - the default server-side session storage, store, is purposely not designed for a production environment, resulting in memory leaks not scalling past a single process.
-// For production, the session secret should change perdiodicaly
+// Whats happening is that the session is working as intended, the issue is related to how im handling global variables
+// these need to be changed to session variables, in order for the app to work as intended
