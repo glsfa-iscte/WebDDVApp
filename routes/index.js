@@ -3,31 +3,27 @@ const router = express.Router();
 const Realm = require('realm-web');
 
 router.get('/', (req, res) => {
-    let email = req.session.email;
-    if(!email){
-        console.log("No email in session")
-        email = null
-    }
+    const app = req.app.locals.app;
     //render our index view
-    console.log("EMAIL: " + req.session.email);
-    console.log("PASSWORD: " + req.session.password);
-    console.log(req.sessionID)
-    /*
-    if(req.session.user != null && req.app.locals.app.currentUser == null){
-        try {
-            if(req.app.locals.app.currentUser == null)
-                console.log("Current app user is null")
-            //req.app.locals.app.switchUser(req.session.user);
-            console.log("Setting current user to session user");
-            console.log("Current user id: " +  req.app.locals.app.currentUser.id);
-        } catch (error) {
-            console.log("Failed to set current user to session user: " + error);
-        }   
+    console.log("EMAIL: " + req.session.email + " PASSWORD: " + req.session.password + " SESSION ID: " + req.sessionID);
+    if (req.app.locals.app.currentUser != null) { console.log("Current user id: " + req.app.locals.app.currentUser.id) }
+    if (req.session.user != null) {
+        console.log("Session user id: " + req.session.user.id + " Session user state: |" + req.session.user.state + "|")
+        //IF THE REALM APP USERS DIC IS EMPTY, OR THERE IS A SESSION USER AND THAT SESSION USER IS NOT IN THE REALM APP
+        //Safer to destroy the session and ask the user to login again
+        //WASNT WORKING, when current user logs out and another is selected as the current user this bugs and crashes the app JSON.stringify(app.allUsers) === "{}" || 
+        if (req.session.user && !app.allUsers[req.session.user.id]) {
+            console.log("DESTROYING SESSION: Session user not in realm app users dic")
+            //CODE TO CLOSE THE SESSION
+            req.session.destroy();
+            res.redirect('/');
+            return;
+        } else {
+            //TODO THIS SHOULD BE PRESENT IN EVERY ROUTE THAT REQUIRES A SESSION USER
+            switchActiveUser(app, req.session.user.id)
+        }
     }
-    */
-    if(req.app.locals.app.currentUser != null){console.log("Current user id: " +  req.app.locals.app.currentUser.id)}
-    if(req.session.user != null){console.log("Session user id: " +  req.session.user.id)}
-    res.render('index', { email: email });
+    res.render('index', { email: req.session.email });
 });
 
 //USER AUTHENTICATION
@@ -41,18 +37,16 @@ router.get('/signUp', (req, res) => {
 });
 
 router.get('/logout', async (req, res) => {
-    //TODO this should first set the current user to the user thats logged in in the session and then log out the user, but its not working
+    console.log("Logging out")
     const app = req.app.locals.app;
-    
-    console.assert(app.currentUser != null && req.session.user.id === app.currentUser.id);
-    // set the realm current user to the session user
-    //app.switchUser(req.session.user);
-    await app.currentUser.logOut();
-    //res.redirect('/');
 
-    listUsers(app);
+    switchActiveUser(app, req.session.user.id)
     // Clear the session to remove the email
     req.session.destroy();
+    await app.currentUser.logOut();
+    if (app.currentUser != null) {
+        console.log("Current user id: " + app.currentUser.id)
+    }
     res.redirect('/');
 });
 
@@ -63,14 +57,10 @@ router.post('/login', async (req, res) => {
     const app = req.app.locals.app;
     console.log(email, password);
     try {
-        const user = await loginEmailPassword(email, password, app);
-        //This was changed to session variable to prevent incorrect app behaviour with multiple users accessing the app
-        //req.app.locals.user = await loginEmailPassword(email, password, app);
-        req.session.user = user;
+        req.session.user = await loginEmailPassword(email, password, app);
         // Store the email and password in the session
         req.session.email = email;
         req.session.password = password;
-        //req.session.save();
 
         res.redirect('/accessCloudAPI');
     } catch (error) {
@@ -81,7 +71,6 @@ router.post('/login', async (req, res) => {
                 email: email
             });
     }
-    listUsers(app);
 });
 
 router.post('/signUp', async (req, res) => {
@@ -110,19 +99,33 @@ async function loginEmailPassword(email, password, app) {
     return user;
 }
 
-// Used for debug purposes
-// This list includes all users that have logged in to the client app regardless of whether they are currently authenticated.
-function listUsers(app) {
-    // Get an object with all Users, where the keys are the User IDs
-    console.log("1------")
-    for (const userId in app.allUsers) {
-        const user = app.allUsers[userId];
-        console.log(
-            `User with id ${user.id} is ${user.isLoggedIn ? "logged in" : "logged out"
-            }`
-        );
-    }
-    console.log("2------")
+/**
+ * Returns the user with the given id from the app.allUsers dictionary
+ * @param {*} app the realm app
+ * @param {*} sessionUserId the id of the user to get from the app.allUsers dictionary
+ * @returns 
+ */
+function getUserById(app, sessionUserId) {
+    return app.allUsers[sessionUserId];
 }
 
+/**
+ * Switches the realm app current user to the session user
+ * @param {*} app the realm app
+ * @param {*} sessionUserId the id of the user to get from the app.allUsers dictionary
+ */
+function switchActiveUser(app, sessionUserId) {
+    const user = getUserById(app, sessionUserId);
+    console.log("User id found!!: " + user.id + " Is this user the current user?" + (user.id === app.currentUser.id));
+    //If the session user its not the current, switch to the session user
+    if (user.id !== app.currentUser.id) {
+        try {
+            console.log("Switching user to session user");
+            app.switchUser(user);
+        } catch (error) {
+            console.log("Error switching user: " + error);
+        }
+    }
+    console.log()
+}
 module.exports = router;

@@ -45,10 +45,7 @@ app.use(
 //You can access local variables in templates rendered within the application. This is useful for providing helper functions to templates, 
 // as well as application-level data. Local variables are available in middleware via req.app.locals
 
-
 app.locals.app = new Realm.App({ id: process.env.MONGO_DB_APP_ID });
-//TODO THIS NEEDS TO BE CHANGED TO SESSION VARIABLES NOT GLOBAL VARIABLES
-//app.locals.user;
 
 app.use('/', indexRouter);
 app.use('/accessCloudAPI', accessCloudAPIRouter);
@@ -71,6 +68,3 @@ function replaceStringFields(url, replacements) {
   });
   return url;
 }
-//TODO 
-// Whats happening is that the session is working as intended, the issue is related to how im handling global variables
-// these need to be changed to session variables, in order for the app to work as intended
