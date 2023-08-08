@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
             switchCurrentUser(app, req.session.user.id)
         }
         console.log("--- Realm Users ---")
-        checkRealmUsers(app)
+        listAllUserAccounts(app)
         console.log("--- ---")
     }
     res.render('index', { email: req.session.email });
@@ -107,12 +107,16 @@ async function loginEmailPassword(email, password, app) {
 }
 
 /**
- * Prints the id and state of all the users in the Realm app, that is, app.allUsers dictionary
+ * Get an object with all Users, where the keys are the User IDs
  * @param {*} app the realm app
  */
-function checkRealmUsers(app){
-    for(user in app.allUsers){
-        console.log("User id: " + user.id + " User state: |" + user.state + "|")
+function listAllUserAccounts(app) {
+    for (const userId in app.allUsers) {
+        const user = app.allUsers[userId];
+        console.log(
+            `User with id ${user.id} is ${user.isLoggedIn ? "logged in" : "logged out"
+            }`
+        );
     }
 }
 
