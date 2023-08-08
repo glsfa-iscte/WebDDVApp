@@ -66,9 +66,7 @@ router.post('/login', async (req, res) => {
         // Store the email and password in the session
         req.session.email = email;
         req.session.password = password;
-        //Switches the active user to the one that just logged in before opening the connection to access the cloud
-        switchCurrentUser(app, req.session.user.id)
-
+        
         res.redirect('/accessCloudAPI');
     } catch (error) {
         console.error('Failed to login', error);
