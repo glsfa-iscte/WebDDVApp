@@ -13,14 +13,16 @@ router.get('/', (req, res) => {
         //Safer to destroy the session and ask the user to login again
         //WASNT WORKING, when current user logs out and another is selected as the current user this bugs and crashes the app JSON.stringify(app.allUsers) === "{}" || 
         if (req.session.user && !app.allUsers[req.session.user.id]) {
+            for(user in app.allUsers){
+                console.log("User id: " + user.id + " User state: |" + user.state + "|")
+            }
             console.log("DESTROYING SESSION: Session user not in realm app users dic")
             //CODE TO CLOSE THE SESSION
             req.session.destroy();
             res.redirect('/');
             return;
         } else {
-            //TODO THIS SHOULD BE PRESENT IN EVERY ROUTE THAT REQUIRES A SESSION USER
-            switchActiveUser(app, req.session.user.id)
+            switchCurrentUser(app, req.session.user.id)
         }
     }
     res.render('index', { email: req.session.email });
@@ -40,7 +42,7 @@ router.get('/logout', async (req, res) => {
     console.log("Logging out")
     const app = req.app.locals.app;
 
-    switchActiveUser(app, req.session.user.id)
+    switchCurrentUser(app, req.session.user.id)
     // Clear the session to remove the email
     req.session.destroy();
     await app.currentUser.logOut();
@@ -61,6 +63,8 @@ router.post('/login', async (req, res) => {
         // Store the email and password in the session
         req.session.email = email;
         req.session.password = password;
+        //Switches the active user to the one that just logged in before opening the connection to access the cloud
+        switchCurrentUser(app, req.session.user.id)
 
         res.redirect('/accessCloudAPI');
     } catch (error) {
@@ -114,7 +118,7 @@ function getUserById(app, sessionUserId) {
  * @param {*} app the realm app
  * @param {*} sessionUserId the id of the user to get from the app.allUsers dictionary
  */
-function switchActiveUser(app, sessionUserId) {
+function switchCurrentUser(app, sessionUserId) {
     const user = getUserById(app, sessionUserId);
     console.log("User id found!!: " + user.id + " Is this user the current user?" + (user.id === app.currentUser.id));
     //If the session user its not the current, switch to the session user
