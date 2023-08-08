@@ -13,17 +13,20 @@ router.get('/', (req, res) => {
         //Safer to destroy the session and ask the user to login again
         //WASNT WORKING, when current user logs out and another is selected as the current user this bugs and crashes the app JSON.stringify(app.allUsers) === "{}" || 
         if (req.session.user && !app.allUsers[req.session.user.id]) {
-            for(user in app.allUsers){
-                console.log("User id: " + user.id + " User state: |" + user.state + "|")
-            }
             console.log("DESTROYING SESSION: Session user not in realm app users dic")
             //CODE TO CLOSE THE SESSION
             req.session.destroy();
             res.redirect('/');
             return;
         } else {
+            for(user in app.allUsers){
+                console.log("User id: " + user.id + " User state: |" + user.state + "|")
+            }
             switchCurrentUser(app, req.session.user.id)
         }
+        console.log("--- Realm Users ---")
+        checkRealmUsers(app)
+        console.log("--- ---")
     }
     res.render('index', { email: req.session.email });
 });
@@ -101,6 +104,16 @@ async function loginEmailPassword(email, password, app) {
     // `App.currentUser` updates to match the logged in user
     console.assert(user.id === app.currentUser.id);
     return user;
+}
+
+/**
+ * Prints the id and state of all the users in the Realm app, that is, app.allUsers dictionary
+ * @param {*} app the realm app
+ */
+function checkRealmUsers(app){
+    for(user in app.allUsers){
+        console.log("User id: " + user.id + " User state: |" + user.state + "|")
+    }
 }
 
 /**
