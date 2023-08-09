@@ -5,8 +5,6 @@ const Realm = require('realm-web');
 router.get('/', (req, res) => {
     const app = req.app.locals.app;
     //render our index view
-    console.log("EMAIL: " + req.session.email + " PASSWORD: " + req.session.password + " SESSION ID: " + req.sessionID);
-    if (req.app.locals.app.currentUser != null) { console.log("Current user id: " + req.app.locals.app.currentUser.id) }
     if (req.session.user != null) {
         console.log("Session user id: " + req.session.user.id + " Session user state: |" + req.session.user.state + "|")
         //IF THE REALM APP USERS DIC IS EMPTY, OR THERE IS A SESSION USER AND THAT SESSION USER IS NOT IN THE REALM APP
@@ -31,42 +29,47 @@ router.get('/', (req, res) => {
     res.render('index', { email: req.session.email });
 });
 
-//USER AUTHENTICATION
-// these are the routes to render the authentication pages
+/**
+ * Login get route
+ */
 router.get('/login', (req, res) => {
     res.render('authentication/login');
 });
 
+/**
+ * Sign up get route
+ */
 router.get('/signUp', (req, res) => {
     res.render('authentication/signUp');
 });
 
+/**
+ * Logout get route switch the current user to the session user and destroy the session and log out the realm current user
+ */
 router.get('/logout', async (req, res) => {
     console.log("Logging out")
     const app = req.app.locals.app;
-
+    //Switch the current user to the session user
     switchCurrentUser(app, req.session.user.id)
-    // Clear the session to remove the email
+    //Clear the session to remove the email, password and user
     req.session.destroy();
+    //Log out the realm current user
     await app.currentUser.logOut();
-    if (app.currentUser != null) {
-        console.log("Current user id: " + app.currentUser.id)
-    }
     res.redirect('/');
 });
 
-
-// these are the routes to handle the authentication
+/**
+ * Login post route get the email and password from the body and login the user in realm, which makes it the current user and sets the session user variables
+ */
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const app = req.app.locals.app;
-    console.log(email, password);
+    
     try {
         req.session.user = await loginEmailPassword(email, password, app);
         // Store the email and password in the session
         req.session.email = email;
         req.session.password = password;
-        
         res.redirect('/accessCloudAPI');
     } catch (error) {
         console.error('Failed to login', error);
@@ -78,11 +81,14 @@ router.post('/login', async (req, res) => {
     }
 });
 
+/**
+ * Sign up post route get the email and password from the body and sign up the user in realm
+ */
 router.post('/signUp', async (req, res) => {
     const { email, password } = req.body;
     const app = req.app.locals.app;
     try {
-        const user = await app.emailPasswordAuth.registerUser({ email, password });
+        await app.emailPasswordAuth.registerUser({ email, password });
         res.redirect('/login');
     } catch (error) {
         console.error('Failed to sign up', error);
@@ -94,6 +100,13 @@ router.post('/signUp', async (req, res) => {
     }
 });
 
+/**
+ * Login in realm app with email and password
+ * @param {*} email the email to login
+ * @param {*} password the password to login
+ * @param {*} app the realm app
+ * @returns the logged in user
+ */
 async function loginEmailPassword(email, password, app) {
     // Create an email/password credential
     const credentials = Realm.Credentials.emailPassword(email, password);

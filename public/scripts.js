@@ -1,49 +1,37 @@
-/*
-TODO: NOT WORKING YET, AM NOT ABLE TO CALL THESE INSIDE THE CORRESPONDING PLACES
-// Function to toggle the sidenav
-function toggleSidebar() {
-    const sidenav = document.querySelector('.sidenav');
-    const sidenavToggle = document.querySelector('.sidenav-toggle');
-
-    // Toggle the 'sidenav-closed' class to hide/show the sidenav
-    sidenav.classList.toggle('sidenav-closed');
-
-    // Change the button text to indicate open/close state
-    if (sidenav.classList.contains('sidenav-closed')) {
-        sidenavToggle.innerHTML = '☰'; // Hamburger icon
-    } else {
-        sidenavToggle.innerHTML = '✕'; // Close icon
-    }
-}
-*/
-
-// Sign up form validation
+//SIGN UP FORM CONTROL FUNCTIONS, USED BY SIGNUP.EJS
 /**
  * Function to check if the password matches the confirm password and meets all the aditional requirements, and if it does, enable the submit button
  * @param {*} passwordId id of the password input
  * @param {*} confirmPasswordId id of the confirm password input
  * @param {*} submitInputId  id of the submit input 
  * @param {*} passwordCheckMatchId  id of the password check match element
- * @param {*} passwordCheckHassUppercaseId id of the password check uppercase element
+ * @param {*} passwordCheckHasUppercaseId id of the password check uppercase element
  * @param {*} passwordCheckHasNumberId id of the password check number element
  * @param {*} passwordCheckLengthId id of the password check length element
  */
-/*
-function checkPasswordRequirements(passwordId, confirmPasswordId, submitInputId, passwordCheckMatchId, passwordCheckHassUppercaseId, passwordCheckHasNumberId, passwordCheckLengthId) {
+
+function checkPasswordRequirements(passwordId, confirmPasswordId, submitInputId, passwordCheckMatchId, passwordCheckHasUppercaseId, passwordCheckHasNumberId, passwordCheckLengthId) {
     const password = document.getElementById(passwordId).value;
     const confirmPassword = document.getElementById(confirmPasswordId).value;
     const submitInput = document.getElementById(submitInputId);
 
-    checkPasswordMatches(password, confirmPassword, submitInput, passwordCheckMatch, passwordCheckMatchId);
-    checkPasswordUppercase(password, passwordCheckHassUppercaseId);
+    checkPasswordMatches(password, confirmPassword, submitInput, passwordCheckMatchId);
+    checkPasswordUppercase(password, passwordCheckHasUppercaseId);
     checkPasswordNumber(password, passwordCheckHasNumberId);
     checkPasswordLength(password, passwordCheckLengthId);
 
 }
 
+/**
+ * Check if the password matches the confirm password and change the style and text of the password check match element accordingly
+ * @param {*} password the password input
+ * @param {*} confirmPassword the confirm password input
+ * @param {*} submitInput the submit input
+ * @param {*} passwordCheckMatchId the id of the password check match element
+ */
 function checkPasswordMatches(password, confirmPassword, submitInput, passwordCheckMatchId) {
     const passwordCheckMatch = document.getElementById(passwordCheckMatchId);
-    if (password !== confirmPassword || password.length != confirmPassword.length) {
+    if (password == "" || password !== confirmPassword || password.length != confirmPassword.length) {
         submitInput.disabled = true;
         submitInput.style.opacity = "0.5";
         
@@ -60,6 +48,11 @@ function checkPasswordMatches(password, confirmPassword, submitInput, passwordCh
     }
 }
 
+/**
+ * Check if the password meets the length requirement and change the style of the password check length element accordingly
+ * @param {*} password the password input
+ * @param {*} passwordCheckLengthId the id of the password check length element
+ */
 function checkPasswordLength(password, passwordCheckLengthId) {
     const passwordCheckLength = document.getElementById(passwordCheckLengthId);
     if (password.length >= 8 && password.length <= 32) {
@@ -70,6 +63,12 @@ function checkPasswordLength(password, passwordCheckLengthId) {
         passwordCheckLength.style.opacity = "1";
     }
 }
+
+/**
+ * Check if the password has at least one number and change the style of the password check number element accordingly
+ * @param {*} password the password input
+ * @param {*} passwordCheckHasNumberId the id of the password check number element
+ */
 function checkPasswordNumber(password, passwordCheckHasNumberId) {
     const passwordCheckHasNumber = document.getElementById(passwordCheckHasNumberId);
     if (password.match(/[0-9]/)) {
@@ -80,6 +79,12 @@ function checkPasswordNumber(password, passwordCheckHasNumberId) {
         passwordCheckHasNumber.style.opacity = "1";
     }
 }
+
+/**
+ * Check if the password has at least one uppercase letter and change the style of the password check uppercase element accordingly
+ * @param {*} password 
+ * @param {*} passwordCheckHassUppercaseId 
+ */
 function checkPasswordUppercase(password, passwordCheckHassUppercaseId) {
     const passwordCheckHasUppercase = document.getElementById(passwordCheckHassUppercaseId);
     if (password.match(/[A-Z]/)) {
@@ -90,14 +95,29 @@ function checkPasswordUppercase(password, passwordCheckHassUppercaseId) {
         passwordCheckHasUppercase.style.opacity = "1";
     }
 }
-*/
 
-// Your code that uses the variables
-//const { APP_ID, APP_KEY, LICENSE, MQTT_ADDRESS, USER, PASSWORD } = window.config;
+//SIDENAV CONTROL FUNCTIONS, USED BY HEADER.EJS
+/**
+ * Open the side navigation by setting the width of the side navigation to 250px
+ */
+function openNav() {
+    document.getElementById("sideNav").style.width = "250px";
+}
 
+/**
+ * Close the side navigation by setting the width of the side navigation to 0
+ */
+function closeNav() {
+    document.getElementById("sideNav").style.width = "0";
+}
 
-//These functions are used to accessCloudAPI.ejs
-
+//ACCESS TO THE CLOUD API, USED BY ACCESSCLOUDAPI.EJS
+/**
+ * The appId and appKey and license need to be requested on the developer website.
+ * @param {*} APP_ID the dji developer app id
+ * @param {*} APP_KEY the dji developer app key
+ * @param {*} LICENSE the dji developer license
+ */
 function platformVerifyLicense(APP_ID, APP_KEY, LICENSE) {
     let token = window.djiBridge.platformVerifyLicense(
         APP_ID,
@@ -117,7 +137,10 @@ function registerParams(MQTT_ADDRESS, USER, PASSWORD) {
     return register_params;
 }
 
-//Used to load the cloud module
+/**
+ * The process of loading the cloud module will initiate an MQTT login request, so the server needs to pre-configure the login password for the MQTT gateway
+ * @param {*} register_params the mqtt connection parameters
+ */
 function loadModule(register_params) {
     log("Load Component: thing " +
         window.djiBridge.platformLoadComponent("thing", register_params) +
@@ -125,6 +148,11 @@ function loadModule(register_params) {
         window.djiBridge.thingGetConnectState());
 }
 
+/**
+ * Start the connection to the thing model
+ * @param {*} USER the mqtt username
+ * @param {*} PASSWORD the mqtt password
+ */
 function establishConnection(USER, PASSWORD) {
     log(
         "Start the connection thingconn: " +
