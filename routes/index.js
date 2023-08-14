@@ -37,17 +37,9 @@ router.get('/login', (req, res) => {
 });
 
 /**
- * Sign up get route
- */
-router.get('/signUp', (req, res) => {
-    res.render('authentication/signUp');
-});
-
-/**
  * Logout get route switch the current user to the session user and destroy the session and log out the realm current user
  */
 router.get('/logout', async (req, res) => {
-    console.log("Logging out")
     const app = req.app.locals.app;
     //Switch the current user to the session user
     switchCurrentUser(app, req.session.user.id)
@@ -56,6 +48,34 @@ router.get('/logout', async (req, res) => {
     //Log out the realm current user
     await app.currentUser.logOut();
     res.redirect('/');
+});
+
+/**
+ * Sign up get route
+ */
+router.get('/signUp', (req, res) => {
+    res.render('authentication/signUp');
+});
+
+/**
+ * Forgot password route
+ */
+router.get('/forgotPassword', (req, res) => {
+    res.render('authentication/forgotPassword');
+});
+
+/**
+ * Forgot password confirmation route
+ */
+router.get('/forgotPasswordConfirmation', (req, res) => {
+    res.render('authentication/forgotPasswordConfirmation');
+});
+
+/**
+ * Reset password route, accessed from the reset password email, requested by the user
+ */
+router.get('/resetPassword', (req, res) => {
+    res.render('authentication/resetPassword');
 });
 
 /**
@@ -95,6 +115,53 @@ router.post('/signUp', async (req, res) => {
         res.render('authentication/signUp',
             {
                 errorMessage: `Failed to sign up: ${error.error}`,
+                email: email
+            });
+    }
+});
+
+/**
+ * Forgot password post route gets the email from the body and send a reset password email to the user, using realm sdk method that sends a reset email to a user
+ */
+router.post('/forgotPassword', async (req, res) => {
+    const { email } = req.body;
+    const app = req.app.locals.app;
+    try {
+        await app.emailPasswordAuth.sendResetPasswordEmail({ email });
+        res.render('/forgotPasswordConfirmation', { email: email });
+    } catch (error) {
+        console.error('Failed to send reset password email', error);
+        res.render('authentication/forgotPassword',
+            {
+                errorMessage: `Failed send reset password email: ${error.error}`,
+                email: email
+            });
+    }
+});
+
+router.post('/resetPassword', async (req, res) => {
+    // Get the token and tokenId from the URL
+    const password = req.body.password;
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const tokenId = params.get("tokenId");
+    //if (!token || !tokenId) {
+    //    throw new Error(
+    //        "You can only call resetPassword() if the user followed a confirmation email link"
+    //    );
+    //}
+    try {
+        await app.emailPasswordAuth.resetPassword({
+            password: password,
+            token,
+            tokenId,
+        });
+        res.redirect('/login');
+    } catch (error) {
+        console.error('Failed to reset password', error);
+        res.render('authentication/forgotPassword',
+            {
+                errorMessage: `Failed reset password: ${error.error}`,
                 email: email
             });
     }
