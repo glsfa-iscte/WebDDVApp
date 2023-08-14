@@ -139,21 +139,27 @@ router.post('/forgotPassword', async (req, res) => {
     }
 });
 
+/**
+ * Reset password post route gets the token, tokenId and password from the body and reset the password of the user, using realm sdk method that resets the password of a user
+ */
 router.post('/resetPassword', async (req, res) => {
     const { token, tokenId, password } = req.body;
+    const app = req.app.locals.app;
+    console.log("Token: " + token + " TokenId: " + tokenId + " Password: " + password)
     try {
+        console.log("Resetting password")
         await app.emailPasswordAuth.resetPassword({
             password: password,
             token,
             tokenId,
         });
+        console.log("Password reseted")
         res.redirect('/login');
     } catch (error) {
         console.error('Failed to reset password', error);
-        res.render('authentication/forgotPassword',
+        res.render('authentication/login',
             {
                 errorMessage: `Failed reset password: ${error.error}`,
-                email: email
             });
     }
 });
