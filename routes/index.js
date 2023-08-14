@@ -128,7 +128,7 @@ router.post('/forgotPassword', async (req, res) => {
     const app = req.app.locals.app;
     try {
         await app.emailPasswordAuth.sendResetPasswordEmail({ email });
-        res.render('/forgotPasswordConfirmation', { email: email });
+        res.render('/forgotPasswordConfirmation');
     } catch (error) {
         console.error('Failed to send reset password email', error);
         res.render('authentication/forgotPassword',
