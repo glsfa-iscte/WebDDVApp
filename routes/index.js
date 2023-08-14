@@ -140,16 +140,7 @@ router.post('/forgotPassword', async (req, res) => {
 });
 
 router.post('/resetPassword', async (req, res) => {
-    // Get the token and tokenId from the URL
-    const password = req.body.password;
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-    const tokenId = params.get("tokenId");
-    //if (!token || !tokenId) {
-    //    throw new Error(
-    //        "You can only call resetPassword() if the user followed a confirmation email link"
-    //    );
-    //}
+    const { token, tokenId, password } = req.body;
     try {
         await app.emailPasswordAuth.resetPassword({
             password: password,

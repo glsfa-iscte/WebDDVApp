@@ -177,3 +177,16 @@ function setWorkspaseId(uuid) {
 function setPlatformName(platformName, workspaceName, desc) {
     window.djiBridge.platformSetInformation(platformName, workspaceName, desc)
 }
+
+/**
+ * Handle the token and token id from the reset password url
+ */
+function handleTokenData() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const tokenId = params.get("tokenId");
+
+    // Set the values of the hidden input fields
+    document.getElementById("tokenInput").value = token;
+    document.getElementById("tokenIdInput").value = tokenId;
+}
